@@ -4,8 +4,10 @@
 -- script: lua
 
 zoom=1
-row=math.floor((136-zoom)/zoom) -- quantidade de linhas da matriz
-col=math.floor((240-zoom)/zoom) -- quantidade de colunas da matriz
+row=136 -- quantidade de linhas da matriz
+col=240 -- quantidade de colunas da matriz
+center_x = col/2
+center_y = row/2
 
 -- funcao de criacao de matriz 2D
 function create(rows,columns)
@@ -20,19 +22,13 @@ function create(rows,columns)
 end
 
 -- funcao de preenchimento da matriz
-function fillmatrix(matrix)
-	for i=1,row do
-		for j=1,col do
-			-- 
-			for k=1,100 do
-				if k==100 then 
-					matrix[i][j]=math.random(0,1)
-				end
-			end
+function fillmatrix(matrix)	
+	for i=center_y-20,center_y+20,1 do
+		for j=1,2 do			
+			matrix[i][j]=math.random(0,1)
 		end
 	end
 end
-
 
 
 -- Cria a matriz
@@ -40,10 +36,17 @@ mtx = create(row,col)
 fillmatrix(mtx)
 aux = mtx
 
+-- Desenha uma linha horizontal e vertical no centro da tela
+function drawline()
+	line(center_x,0,center_x,136,11)
+	line(0,center_y,240,center_y,11)
+end
+
+-- função para processamento da matriz a cada geração
 function process()
+	local count=0
 	for x=1,row do
 		for y=1,col do
-			local count=0
 			-- verifica a primeira linha
 			if x==1 then
 				-- verifica o primeiro indíce da matriz
@@ -67,7 +70,7 @@ function process()
 			-- verifica a ultima linha da matriz
 			elseif x==row then
 				-- verifica o ultimo indice da matriz
-				if x==y then
+				if y==col then
 					if mtx[x][y-1]==1 then count=count+1 end
 					if mtx[x-1][y-1]==1 then count=count+1 end
 					if mtx[x-1][y]==1 then count=count+1 end
@@ -100,14 +103,14 @@ function process()
 				if mtx[x+1][y]==1 then count=count+1 end
 			-- verifica as demais posições da matriz
 			else
-				if mtx[x-1][y-1]==1 then count=count+1 end
-				if mtx[x-1][y]==1 then count=count+1 end
-				if mtx[x-1][y+1]==1 then count=count+1 end
-				if mtx[x][y+1]==1 then count=count+1 end
 				if mtx[x+1][y+1]==1 then count=count+1 end
 				if mtx[x+1][y]==1 then count=count+1 end
 				if mtx[x+1][y-1]==1 then count=count+1 end
 				if mtx[x][y-1]==1 then count=count+1 end
+				if mtx[x-1][y-1]==1 then count=count+1 end
+				if mtx[x-1][y]==1 then count=count+1 end
+				if mtx[x-1][y+1]==1 then count=count+1 end
+				if mtx[x][y+1]==1 then count=count+1 end
 			end
 			-- verifica a quantidade de vizinhos vivos
 			-- Qualquer célula viva com menos de dois vizinhos vivos morre de solidão
@@ -118,13 +121,14 @@ function process()
 				aux[x][y]=0
 			-- Qualquer célula viva com dois ou três vizinhos vivos continua no mesmo estado para a próxima geração
 			else
-				if (mtx[x][y]==1) and (count==2 or count==3) then 
+				if mtx[x][y]==1  then 
 					aux[x][y]=1 
 			-- Qualquer célula morta com exatamente três vizinhos vivos se torna uma célula viva
 				else
 					if count==3 then aux[x][y]=1 end
 				end
 			end
+			count=0
 		end -- end for
 	end -- end for	
 		
@@ -133,17 +137,17 @@ end
 
 function draw()
 	
-	x=0
-	y=0
-	w=zoom
-	h=zoom
-	c=14
+	local x=0
+	local y=0
+	local w=zoom
+	local h=zoom
+	local c=14
 	
 	-- varre a matriz
 	for i=1,row do
 		for j=1,col do
-			if mtx[i][j] == 1 then
-				rect(x,y,w,h,c)
+			if mtx[i][j]==1 then
+				rect(x,y,w,h,c)				
 			end
 			x=x+zoom
 		end
@@ -153,16 +157,11 @@ function draw()
 
 end
 
-t=0
+
 function TIC()
-	second=0.5
-	-- wait
- if t>second*60 then
 		cls(0)
-		process()
 		draw()
-		t=0
-	end
-	t=t+1
+		--drawline()
+		process()		
 end
 
