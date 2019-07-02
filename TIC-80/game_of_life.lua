@@ -3,11 +3,11 @@
 -- desc:   
 -- script: lua
 
-zoom=1
+zoom=1 -- define o tamanho do passo em pixel do retangulo
 row=136 -- quantidade de linhas da matriz
 col=240 -- quantidade de colunas da matriz
-center_x = col/2
-center_y = row/2
+center_x = col/2 -- encontra o centro da tela em relação ao eixo x
+center_y = row/2 -- encontra o centro da tela em relação ao eixo y
 
 -- funcao de criacao de matriz 2D
 function create(rows,columns)
@@ -30,7 +30,6 @@ function fillmatrix(matrix)
 	end
 end
 
-
 -- Cria a matriz
 mtx = create(row,col)
 fillmatrix(mtx)
@@ -38,7 +37,9 @@ aux = mtx
 
 -- Desenha uma linha horizontal e vertical no centro da tela
 function drawline()
+	-- desenha uma linha vertical na tela
 	line(center_x,0,center_x,136,11)
+	-- desenha uma linha horizontal na tela
 	line(0,center_y,240,center_y,11)
 end
 
@@ -135,6 +136,7 @@ function process()
 	mtx = aux	
 end
 
+-- funcao de desenho na tela
 function draw()
 	
 	local x=0
@@ -157,7 +159,7 @@ function draw()
 
 end
 
-
+-- funcao principal do TIC-80
 function TIC()
 		cls(0)
 		draw()
